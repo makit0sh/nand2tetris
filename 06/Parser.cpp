@@ -112,3 +112,8 @@ std::string Parser::jump()
     }
 }
 
+void Parser::rewind()
+{
+    ifs.clear();
+    ifs.seekg(0, std::ios_base::beg);
+}

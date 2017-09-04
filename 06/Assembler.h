@@ -7,6 +7,7 @@
 
 #include "Parser.h"
 #include "Code.h"
+#include "SymbolTable.h"
 
 int main(int argc, char** argv);
 

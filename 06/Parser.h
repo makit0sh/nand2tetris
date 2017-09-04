@@ -28,6 +28,7 @@ class Parser {
         std::string dest();
         std::string comp();
         std::string jump();
+        void rewind();
 };
 
 #endif // PARSER_H_
