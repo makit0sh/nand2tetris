@@ -1,7 +1,7 @@
 CXX = g++
 TARGET = bin/Assembler
 CXXFLAGS = -Wall -O2 -pipe
-SRCS = Assembler.cpp Parser.cpp Code.cpp
+SRCS = Assembler.cpp Parser.cpp Code.cpp SymbolTable.cpp
 OBJS := $(SRCS:.cpp=.o)
 
 $(TARGET): $(OBJS)
