@@ -16,6 +16,7 @@ int main(int argc, char** argv)
     try{
         Parser parser(argv[1]);
         std::ofstream ofs(output_filename, std::ios::out);
+        ofs.exceptions(std::ofstream::failbit);
         Code code;
         SymbolTable symbol_table;
 
