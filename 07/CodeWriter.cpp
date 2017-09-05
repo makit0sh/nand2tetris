@@ -16,8 +16,12 @@ void CodeWriter::setFileName(std::string fileName)
     }
 
     labelcounter = 0;
-    ofs = new std::ofstream(fileName, std::ios::out);
-    ofs->exceptions(std::ifstream::failbit);
+
+    //TODO
+    className = fileName.substr(0, fileName.size()-4);
+
+    ofs = new std::ofstream(fileName);
+    //ofs->exceptions(std::ifstream::failbit);
 }
 
 void CodeWriter::writeArithmetic(std::string command)
@@ -177,30 +181,101 @@ void CodeWriter::writePushPop(CommandType command, std::string segment, int inde
 {
     if (command== C_PUSH) {
         if (segment == "constant") {
-            *ofs << "@" << std::to_string(index) << std::endl;
+            *ofs << "@" << index << std::endl;
             *ofs << "D=A" << std::endl;
-            *ofs << "@SP" << std::endl;
-            *ofs << "A=M" << std::endl;
-            *ofs << "M=D" << std::endl;
-            *ofs << "D=A+1" << std::endl;
-            *ofs << "@SP" << std::endl;
-            *ofs << "M=D" << std::endl;
+        }else if (segment == "local") {
+            *ofs << "@LCL" << std::endl;
+            *ofs << "D=M" << std::endl;
+            *ofs << "@" << index << std::endl;
+            *ofs << "A=D+A" << std::endl;
+            *ofs << "D=M" << std::endl;
+        }else if (segment == "argument") {
+            *ofs << "@ARG" << std::endl;
+            *ofs << "D=M" << std::endl;
+            *ofs << "@" << index << std::endl;
+            *ofs << "A=D+A" << std::endl;
+            *ofs << "D=M" << std::endl;
+
+        }else if (segment == "this") {
+            *ofs << "@THIS" << std::endl;
+            *ofs << "D=M" << std::endl;
+            *ofs << "@" << index << std::endl;
+            *ofs << "A=D+A" << std::endl;
+            *ofs << "D=M" << std::endl;
+
+        }else if (segment == "that") {
+            *ofs << "@THAT" << std::endl;
+            *ofs << "D=M" << std::endl;
+            *ofs << "@" << index << std::endl;
+            *ofs << "A=D+A" << std::endl;
+            *ofs << "D=M" << std::endl;
+
+        }else if (segment == "pointer") {
+            *ofs << "@3" << std::endl;
+            *ofs << "D=A" << std::endl;
+            *ofs << "@" << index << std::endl;
+            *ofs << "A=D+A" << std::endl;
+            *ofs << "D=M" << std::endl;
+
+        }else if (segment == "temp") {
+            *ofs << "@5" << std::endl;
+            *ofs << "D=A" << std::endl;
+            *ofs << "@" << index << std::endl;
+            *ofs << "A=D+A" << std::endl;
+            *ofs << "D=M" << std::endl;
+
+        }else if (segment == "static") {
+            *ofs << "@" << className << "." << index << std::endl;
+            *ofs << "D=M" << std::endl;
         }else{
             throw std::runtime_error("invalid syntax");
         }
+        *ofs << "@SP" << std::endl;
+        *ofs << "A=M" << std::endl;
+        *ofs << "M=D" << std::endl;
+        *ofs << "D=A+1" << std::endl;
+        *ofs << "@SP" << std::endl;
+        *ofs << "M=D" << std::endl;
+
     }else if (command== C_POP){
-        if (segment == "constant") {
-            *ofs << "@" << std::to_string(index) << std::endl;
+        if (segment == "local") {
+            *ofs << "@LCL" << std::endl;
+            *ofs << "D=M" << std::endl;
+        }else if (segment == "argument") {
+            *ofs << "@ARG" << std::endl;
+            *ofs << "D=M" << std::endl;
+        }else if (segment == "this") {
+            *ofs << "@THIS" << std::endl;
+            *ofs << "D=M" << std::endl;
+        }else if (segment == "that") {
+            *ofs << "@THAT" << std::endl;
+            *ofs << "D=M" << std::endl;
+        }else if (segment == "pointer") {
+            *ofs << "@3" << std::endl;
             *ofs << "D=A" << std::endl;
-            *ofs << "@SP" << std::endl;
-            *ofs << "A=M" << std::endl;
-            *ofs << "M=D" << std::endl;
-            *ofs << "D=A+1" << std::endl;
-            *ofs << "@SP" << std::endl;
-            *ofs << "M=D" << std::endl;
+        }else if (segment == "temp") {
+            *ofs << "@5" << std::endl;
+            *ofs << "D=A" << std::endl;
+        }else if (segment == "static"){
+            *ofs << "@" << className << "." << index << std::endl;
+            *ofs << "D=A" << std::endl;
         }else{
             throw std::runtime_error("invalid syntax");
         }
+        if (segment != "static") {
+            *ofs << "@" << index << std::endl;
+            *ofs << "D=D+A" << std::endl;
+        }
+        *ofs << "@R13" << std::endl;
+        *ofs << "M=D" << std::endl;
+
+        *ofs << "@SP" << std::endl;
+        *ofs << "AM=M-1" << std::endl;
+        *ofs << "D=M" << std::endl;
+        *ofs << "@R13" << std::endl;
+        *ofs << "A=M" << std::endl;
+        *ofs << "M=D" << std::endl;
+
     }else{
         throw std::runtime_error("command was not push nor pop");
     }

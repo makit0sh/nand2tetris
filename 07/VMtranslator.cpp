@@ -7,6 +7,7 @@ int main(int argc, char** argv)
         return 0;
     }
     
+    //TODO
     std::string output_filename(argv[1]);
     if (output_filename.size() < 4 && output_filename.substr(output_filename.size()-4, 3) == ".vm"){
         std::cerr << "unknown filetype" << std::endl;

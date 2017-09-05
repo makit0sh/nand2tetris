@@ -10,6 +10,7 @@ class CodeWriter {
     private:
         std::ofstream* ofs;
         int labelcounter;
+        std::string className;
     public:
         CodeWriter();
         ~CodeWriter();
