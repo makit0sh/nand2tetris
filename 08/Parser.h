@@ -19,7 +19,7 @@ class Parser {
         std::string command;
         std::vector<std::string> command_list;
     public:
-        Parser(char* filename);
+        Parser(std::string filename);
         ~Parser();
 
         bool hasMoreCommands();

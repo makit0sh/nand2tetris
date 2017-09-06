@@ -13,7 +13,7 @@ class CodeWriter {
         std::string className;
         std::string currentFunctionName;
     public:
-        CodeWriter();
+        CodeWriter(std::string fileName);
         ~CodeWriter();
 
         void setFileName(std::string fileName);

@@ -1,8 +1,9 @@
 #include "Parser.h"
 
-Parser::Parser(char* filename) : ifs(filename)
+Parser::Parser(std::string filename) : ifs(filename)
 {
     ifs.exceptions(std::ifstream::failbit);
+    std::cout << "assembling file: " << filename << std::endl;
 }
 
 Parser::~Parser()

@@ -3,6 +3,9 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
+#include <cstdlib>
+#include <dirent.h>
 
 #include "Parser.h"
 #include "CodeWriter.h"

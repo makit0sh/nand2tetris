@@ -1,7 +1,20 @@
 #include "CodeWriter.h"
 
-CodeWriter::CodeWriter() : ofs(nullptr)
+CodeWriter::CodeWriter(std::string fileName)
 {
+    std::string output_filename(fileName);
+    if (output_filename.size() > 3 && output_filename.substr(output_filename.size()-3, 3) == ".vm"){
+        output_filename = output_filename.substr(0, output_filename.size()-3) + ".asm";
+    }else{
+        output_filename = output_filename.substr(0,output_filename.size()-1)+".asm";
+    }
+
+    std::cout << "output file: "<< output_filename << std::endl;
+
+    ofs = new std::ofstream(output_filename);
+    ofs->exceptions(std::ifstream::failbit);
+
+    labelcounter=0;
 }
 
 CodeWriter::~CodeWriter()
@@ -11,18 +24,9 @@ CodeWriter::~CodeWriter()
 
 void CodeWriter::setFileName(std::string fileName)
 {
-    if (ofs != nullptr) {
-        close();
-    }
-
-    labelcounter = 0;
-
-    //TODO
-    className = fileName.substr(0, fileName.size()-4);
     currentFunctionName = "";
 
-    ofs = new std::ofstream(fileName);
-    ofs->exceptions(std::ifstream::failbit);
+    className = fileName.substr(0, fileName.size()-3);
 }
 
 void CodeWriter::writeArithmetic(std::string command)
@@ -292,11 +296,13 @@ void CodeWriter::close()
 
 void CodeWriter::writeInit()
 {
+    
     *ofs << "@256" << std::endl;
     *ofs << "D=A" << std::endl;
     *ofs << "@SP" << std::endl;
     *ofs << "M=D" << std::endl;
     writeCall("Sys.init", 0);
+    
 }
 
 void CodeWriter::writeLabel(std::string label)
@@ -349,7 +355,7 @@ void CodeWriter::writeCall(std::string functionName, int numArgs)
     *ofs << "M=D" << std::endl;
     writePushPop(C_PUSH, "temp", 0);
     *ofs << "@SP" << std::endl;
-    *ofs << "D=A" << std::endl;
+    *ofs << "D=M" << std::endl;
     *ofs << "@5" << std::endl;
     *ofs << "D=D-A" << std::endl;
     *ofs << "@" << numArgs << std::endl;
@@ -367,8 +373,6 @@ void CodeWriter::writeCall(std::string functionName, int numArgs)
 
 void CodeWriter::writeReturn()
 {
-    currentFunctionName = "";
-
     *ofs << "@LCL" << std::endl;
     *ofs << "D=M" << std::endl;
     *ofs << "@R14" << std::endl; //FRAME
