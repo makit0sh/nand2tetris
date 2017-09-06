@@ -2,16 +2,21 @@
 
 CodeWriter::CodeWriter(std::string fileName)
 {
-    std::string output_filename(fileName);
-    if (output_filename.size() > 3 && output_filename.substr(output_filename.size()-3, 3) == ".vm"){
-        output_filename = output_filename.substr(0, output_filename.size()-3) + ".asm";
+    if (fileName.size() > 3 && fileName.substr(fileName.size()-3, 3) == ".vm"){
+        fileName = fileName.substr(0, fileName.size()-3) + ".asm";
+    }else if (fileName[fileName.size()-1]=='/') {
+        if (fileName.rfind("/") == std::string::npos) {
+            fileName += fileName.substr(0,fileName.size()-1) + ".asm";
+        }else{
+            fileName += fileName.substr(fileName.substr(0,fileName.size()-1).rfind("/")+1, fileName.size()-fileName.substr(0,fileName.size()-1).rfind("/")-2) + ".asm";
+        }
     }else{
-        output_filename = output_filename.substr(0,output_filename.size()-1)+".asm";
+        throw std::runtime_error("input file should end with either \".vm\" or \"/\"");
     }
 
-    std::cout << "output file: "<< output_filename << std::endl;
+    std::cout << "output file: "<< fileName << std::endl;
 
-    ofs = new std::ofstream(output_filename);
+    ofs = new std::ofstream(fileName);
     ofs->exceptions(std::ifstream::failbit);
 
     labelcounter=0;

@@ -31,7 +31,7 @@ int main(int argc, char** argv)
             filePath = fileName;
         }
 
-        CodeWriter code_writer(filePath+fileName);
+        CodeWriter code_writer(fileName);
         code_writer.writeInit();
 
         for (auto file_itr = file_list.begin(); file_itr!=file_list.end(); ++file_itr) {
