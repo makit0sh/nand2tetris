@@ -19,9 +19,10 @@ void CodeWriter::setFileName(std::string fileName)
 
     //TODO
     className = fileName.substr(0, fileName.size()-4);
+    functionName = "";
 
     ofs = new std::ofstream(fileName);
-    //ofs->exceptions(std::ifstream::failbit);
+    ofs->exceptions(std::ifstream::failbit);
 }
 
 void CodeWriter::writeArithmetic(std::string command)
@@ -64,22 +65,22 @@ void CodeWriter::writeArithmetic(std::string command)
         *ofs << "M=M-1" << std::endl;
         *ofs << "A=M" << std::endl;
         *ofs << "D=D-M" << std::endl;
-        *ofs << "@JUMP" << labelcounter << std::endl;
+        *ofs << "@$$JUMP" << labelcounter << std::endl;
 
         *ofs << "D;JEQ" << std::endl;
 
         *ofs << "@SP" << std::endl;
         *ofs << "A=M" << std::endl;
         *ofs << "M=0" << std::endl;
-        *ofs << "@END" << labelcounter << std::endl;
+        *ofs << "@$$END" << labelcounter << std::endl;
         *ofs << "0;JMP" << std::endl;
 
-        *ofs << "(JUMP" << labelcounter << ")" << std::endl;
+        *ofs << "($$JUMP" << labelcounter << ")" << std::endl;
         *ofs << "@SP" << std::endl;
         *ofs << "A=M" << std::endl;
         *ofs << "M=-1" << std::endl;
 
-        *ofs << "(END" << labelcounter << ")" << std::endl;
+        *ofs << "($$END" << labelcounter << ")" << std::endl;
         *ofs << "@SP" << std::endl;
         *ofs << "M=M+1" << std::endl;
         labelcounter++;
@@ -93,22 +94,22 @@ void CodeWriter::writeArithmetic(std::string command)
         *ofs << "M=M-1" << std::endl;
         *ofs << "A=M" << std::endl;
         *ofs << "D=D-M" << std::endl;
-        *ofs << "@JUMP" << labelcounter << std::endl;
+        *ofs << "@$$JUMP" << labelcounter << std::endl;
 
         *ofs << "D;JLT" << std::endl;
 
         *ofs << "@SP" << std::endl;
         *ofs << "A=M" << std::endl;
         *ofs << "M=0" << std::endl;
-        *ofs << "@END" << labelcounter << std::endl;
+        *ofs << "@$$END" << labelcounter << std::endl;
         *ofs << "0;JMP" << std::endl;
 
-        *ofs << "(JUMP" << labelcounter << ")" << std::endl;
+        *ofs << "($$JUMP" << labelcounter << ")" << std::endl;
         *ofs << "@SP" << std::endl;
         *ofs << "A=M" << std::endl;
         *ofs << "M=-1" << std::endl;
 
-        *ofs << "(END" << labelcounter << ")" << std::endl;
+        *ofs << "($$END" << labelcounter << ")" << std::endl;
         *ofs << "@SP" << std::endl;
         *ofs << "M=M+1" << std::endl;
         labelcounter++;
@@ -123,22 +124,22 @@ void CodeWriter::writeArithmetic(std::string command)
         *ofs << "M=M-1" << std::endl;
         *ofs << "A=M" << std::endl;
         *ofs << "D=D-M" << std::endl;
-        *ofs << "@JUMP" << labelcounter << std::endl;
+        *ofs << "@$$JUMP" << labelcounter << std::endl;
 
         *ofs << "D;JGT" << std::endl;
 
         *ofs << "@SP" << std::endl;
         *ofs << "A=M" << std::endl;
         *ofs << "M=0" << std::endl;
-        *ofs << "@END" << labelcounter << std::endl;
+        *ofs << "@$$END" << labelcounter << std::endl;
         *ofs << "0;JMP" << std::endl;
 
-        *ofs << "(JUMP" << labelcounter << ")" << std::endl;
+        *ofs << "($$JUMP" << labelcounter << ")" << std::endl;
         *ofs << "@SP" << std::endl;
         *ofs << "A=M" << std::endl;
         *ofs << "M=-1" << std::endl;
 
-        *ofs << "(END" << labelcounter << ")" << std::endl;
+        *ofs << "($$END" << labelcounter << ")" << std::endl;
         *ofs << "@SP" << std::endl;
         *ofs << "M=M+1" << std::endl;
         labelcounter++;
@@ -287,6 +288,43 @@ void CodeWriter::close()
         ofs->close();
         ofs = nullptr;
     }
+}
+
+void CodeWriter::writeInit()
+{
+
+}
+
+void CodeWriter::writeLabel(std::string label)
+{
+    *ofs << "(" << functionName << "$" << label << ")" << std::endl;
+}
+
+void CodeWriter::writeGoto(std::string label)
+{
+    *ofs << "@" << functionName << "$" << label << std::endl;
+    *ofs << "0;JMP" << std::endl;
+}
+
+void CodeWriter::writeIf(std::string label)
+{
+    writePushPop(C_POP, "temp", 0);
+    *ofs << "@5" << std::endl;
+    *ofs << "D=M" << std::endl;
+    *ofs << "@" << functionName << "$" << label << std::endl;
+    *ofs << "D;JNE" << std::endl;
+}
+
+void CodeWriter::writeCall(std::string functionName, int numArgs)
+{
+}
+
+void CodeWriter::writeReturn()
+{
+}
+
+void CodeWriter::writeFunction(std::string functionName, int numLocals)
+{
 }
 
 

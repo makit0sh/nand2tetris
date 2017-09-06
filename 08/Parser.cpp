@@ -35,17 +35,29 @@ void Parser::advance()
         command = command.substr(0, command.find("//"));
     }
     boost::trim(command);
+    boost::split(command_list, command, boost::is_space());
 
     if (command.empty()) {
         advance();
-    }else if (command.substr(0,4) == "push") {
+    }else if (command_list[0] == "push") {
         command_type = C_PUSH;
-    }else if (command.substr(0,3) == "pop") {
+    }else if (command_list[0] == "pop") {
         command_type = C_POP;
+    }else if (command_list[0] == "label") {
+        command_type = C_LABEL;
+    }else if (command_list[0] == "goto") {
+        command_type = C_GOTO;
+    }else if (command_list[0] == "if-goto") {
+        command_type = C_IF;
+    }else if (command_list[0] == "function") {
+        command_type = C_FUNCTION;
+    }else if (command_list[0] == "call") {
+        command_type = C_CALL;
+    }else if (command_list[0] == "return") {
+        command_type = C_RETURN;
     }else{
         command_type = C_ARITHMETIC;
     }
-    boost::split(command_list, command, boost::is_space());
 }
 
 CommandType Parser::commandType()
@@ -58,7 +70,7 @@ std::string Parser::arg1()
     if (command_type == C_ARITHMETIC) {
         return command_list[0];
     }else if (command_type == C_RETURN) {
-        return "";
+        throw std::runtime_error("arg1 not found");
     }else{
         return command_list[1];
     }

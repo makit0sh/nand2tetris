@@ -14,17 +14,31 @@ int main(int argc, char** argv)
         return -1;
     }
     output_filename = output_filename.substr(0, output_filename.size()-3) + ".asm";
+    std::cout << output_filename << std::endl;
     
     try{
         Parser parser(argv[1]);
         CodeWriter code_writer;
 
         code_writer.setFileName(output_filename);
+        code_writer.writeInit();
 
         while (parser.hasMoreCommands()){
             parser.advance();
             if (parser.commandType() == C_PUSH || parser.commandType() == C_POP) {
                 code_writer.writePushPop(parser.commandType(), parser.arg1(), parser.arg2());
+            }else if (parser.commandType() == C_LABEL){
+                code_writer.writeLabel(parser.arg1());
+            }else if (parser.commandType() == C_GOTO){
+                code_writer.writeGoto(parser.arg1());
+            }else if (parser.commandType() == C_IF){
+                code_writer.writeIf(parser.arg1());
+            }else if (parser.commandType() == C_CALL){
+                code_writer.writeCall(parser.arg1(), parser.arg2());
+            }else if (parser.commandType() == C_RETURN){
+                code_writer.writeReturn();
+            }else if (parser.commandType() == C_FUNCTION){
+                code_writer.writeFunction(parser.arg1(), parser.arg2());
             }else if (parser.commandType() == C_ARITHMETIC){
                 code_writer.writeArithmetic(parser.arg1());
             }
