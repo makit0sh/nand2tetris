@@ -19,7 +19,7 @@ void CodeWriter::setFileName(std::string fileName)
 
     //TODO
     className = fileName.substr(0, fileName.size()-4);
-    functionName = "";
+    currentFunctionName = "";
 
     ofs = new std::ofstream(fileName);
     ofs->exceptions(std::ifstream::failbit);
@@ -292,17 +292,21 @@ void CodeWriter::close()
 
 void CodeWriter::writeInit()
 {
-
+    *ofs << "@256" << std::endl;
+    *ofs << "D=A" << std::endl;
+    *ofs << "@SP" << std::endl;
+    *ofs << "M=D" << std::endl;
+    writeCall("Sys.init", 0);
 }
 
 void CodeWriter::writeLabel(std::string label)
 {
-    *ofs << "(" << functionName << "$" << label << ")" << std::endl;
+    *ofs << "(" << currentFunctionName << "$" << label << ")" << std::endl;
 }
 
 void CodeWriter::writeGoto(std::string label)
 {
-    *ofs << "@" << functionName << "$" << label << std::endl;
+    *ofs << "@" << currentFunctionName << "$" << label << std::endl;
     *ofs << "0;JMP" << std::endl;
 }
 
@@ -311,20 +315,114 @@ void CodeWriter::writeIf(std::string label)
     writePushPop(C_POP, "temp", 0);
     *ofs << "@5" << std::endl;
     *ofs << "D=M" << std::endl;
-    *ofs << "@" << functionName << "$" << label << std::endl;
+    *ofs << "@" << currentFunctionName << "$" << label << std::endl;
     *ofs << "D;JNE" << std::endl;
 }
 
 void CodeWriter::writeCall(std::string functionName, int numArgs)
 {
+    std::string return_address_label = "$return-address" + std::to_string(labelcounter);
+    labelcounter++;
+    *ofs << "@" << return_address_label << std::endl;
+    *ofs << "D=A" << std::endl;
+    *ofs << "@5" << std::endl;
+    *ofs << "M=D" << std::endl;
+    writePushPop(C_PUSH, "temp", 0);
+    *ofs << "@LCL" << std::endl;
+    *ofs << "D=M" << std::endl;
+    *ofs << "@5" << std::endl;
+    *ofs << "M=D" << std::endl;
+    writePushPop(C_PUSH, "temp", 0);
+    *ofs << "@ARG" << std::endl;
+    *ofs << "D=M" << std::endl;
+    *ofs << "@5" << std::endl;
+    *ofs << "M=D" << std::endl;
+    writePushPop(C_PUSH, "temp", 0);
+    *ofs << "@THIS" << std::endl;
+    *ofs << "D=M" << std::endl;
+    *ofs << "@5" << std::endl;
+    *ofs << "M=D" << std::endl;
+    writePushPop(C_PUSH, "temp", 0);
+    *ofs << "@THAT" << std::endl;
+    *ofs << "D=M" << std::endl;
+    *ofs << "@5" << std::endl;
+    *ofs << "M=D" << std::endl;
+    writePushPop(C_PUSH, "temp", 0);
+    *ofs << "@SP" << std::endl;
+    *ofs << "D=A" << std::endl;
+    *ofs << "@5" << std::endl;
+    *ofs << "D=D-A" << std::endl;
+    *ofs << "@" << numArgs << std::endl;
+    *ofs << "D=D-A" << std::endl;
+    *ofs << "@ARG" << std::endl;
+    *ofs << "M=D" << std::endl;
+    *ofs << "@SP" << std::endl;
+    *ofs << "D=M" << std::endl;
+    *ofs << "@LCL" << std::endl;
+    *ofs << "M=D" << std::endl;
+    *ofs << "@" << functionName << std::endl;
+    *ofs << "0;JMP" << std::endl;
+    *ofs << "(" << return_address_label << ")" << std::endl;
 }
 
 void CodeWriter::writeReturn()
 {
+    currentFunctionName = "";
+
+    *ofs << "@LCL" << std::endl;
+    *ofs << "D=M" << std::endl;
+    *ofs << "@R14" << std::endl; //FRAME
+    *ofs << "M=D" << std::endl;
+    *ofs << "@5" << std::endl;
+    *ofs << "A=D-A" << std::endl;
+    *ofs << "D=M" << std::endl;
+    *ofs << "@R15" << std::endl; //RET
+    *ofs << "M=D" << std::endl;
+    writePushPop(C_POP, "argument", 0);
+    *ofs << "@ARG" << std::endl;
+    *ofs << "D=M" << std::endl;
+    *ofs << "@SP" << std::endl;
+    *ofs << "M=D+1" << std::endl;
+    *ofs << "@R14" << std::endl;
+    *ofs << "D=M" << std::endl;
+    *ofs << "@1" << std::endl;
+    *ofs << "A=D-A" << std::endl;
+    *ofs << "D=M" << std::endl;
+    *ofs << "@THAT" << std::endl;
+    *ofs << "M=D" << std::endl;
+    *ofs << "@R14" << std::endl;
+    *ofs << "D=M" << std::endl;
+    *ofs << "@2" << std::endl;
+    *ofs << "A=D-A" << std::endl;
+    *ofs << "D=M" << std::endl;
+    *ofs << "@THIS" << std::endl;
+    *ofs << "M=D" << std::endl;
+    *ofs << "@R14" << std::endl;
+    *ofs << "D=M" << std::endl;
+    *ofs << "@3" << std::endl;
+    *ofs << "A=D-A" << std::endl;
+    *ofs << "D=M" << std::endl;
+    *ofs << "@ARG" << std::endl;
+    *ofs << "M=D" << std::endl;
+    *ofs << "@R14" << std::endl;
+    *ofs << "D=M" << std::endl;
+    *ofs << "@4" << std::endl;
+    *ofs << "A=D-A" << std::endl;
+    *ofs << "D=M" << std::endl;
+    *ofs << "@LCL" << std::endl;
+    *ofs << "M=D" << std::endl;
+    *ofs << "@R15" << std::endl;
+    *ofs << "A=M" << std::endl;
+    *ofs << "0;JMP" << std::endl;
 }
 
 void CodeWriter::writeFunction(std::string functionName, int numLocals)
 {
+    currentFunctionName = functionName;
+    *ofs << "(" << functionName << ")" << std::endl;
+    for (int i=0;i<numLocals;i++) {
+        writePushPop(C_PUSH, "constant", 0);
+    }
 }
 
 

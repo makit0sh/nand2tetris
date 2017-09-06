@@ -11,7 +11,7 @@ class CodeWriter {
         std::ofstream* ofs;
         int labelcounter;
         std::string className;
-        std::string functionName;
+        std::string currentFunctionName;
     public:
         CodeWriter();
         ~CodeWriter();
