@@ -3,7 +3,7 @@
 JackTokenizer::JackTokenizer(std::string filename) : ifs(filename)
 {
     ifs.exceptions(std::ifstream::failbit);
-    std::cout << "compiling file: " << filename << std::endl;
+    std::cout << "tokenizing file: " << filename << std::endl;
 }
 
 JackTokenizer::~JackTokenizer()
@@ -27,9 +27,6 @@ bool JackTokenizer::hasMoreTokens()
                     }
                 }
             }
-//            do{
-//                while (ifs.get() != '*');
-//            }while (ifs.get() != '/');
         }else{
             ifs.seekg(original_pos, std::ios_base::beg);
             return true;
@@ -119,6 +116,32 @@ void JackTokenizer::advance()
     }
 }
 
+std::string JackTokenizer::peekToken()
+{
+    TokenType tmp_token_type = token_type;
+    std::string tmp_token = token;
+    int original_pos = ifs.tellg();
+    advance();
+    std::string ans = token;
+    token_type = tmp_token_type;
+    token = tmp_token;
+    ifs.seekg(original_pos, std::ios_base::beg);
+    return ans;
+}
+
+TokenType JackTokenizer::peekType()
+{
+    TokenType tmp_token_type = token_type;
+    std::string tmp_token = token;
+    int original_pos = ifs.tellg();
+    advance();
+    TokenType ans = token_type;
+    token_type = tmp_token_type;
+    token = tmp_token;
+    ifs.seekg(original_pos, std::ios_base::beg);
+    return ans;
+}
+
 TokenType JackTokenizer::tokenType()
 {
     return token_type;
@@ -175,7 +198,7 @@ std::string JackTokenizer::stringVal()
     }
 }
 
-void JackTokenizer::debug_xml_output(std::string fileName)
+void JackTokenizer::xml_output(std::string fileName)
 {
     std::ofstream ofs(fileName);
     ofs.exceptions(std::ifstream::failbit);

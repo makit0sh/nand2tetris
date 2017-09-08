@@ -37,13 +37,15 @@ int main(int argc, char** argv)
         for (auto file_itr = file_list.begin(); file_itr!=file_list.end(); ++file_itr) {
 
             JackTokenizer tokenizer(filePath+*file_itr);
-            tokenizer.debug_xml_output(filePath + file_itr->substr(0,file_itr->size()-5) +"T.xml");
+            tokenizer.xml_output(filePath + file_itr->substr(0,file_itr->size()-5) +"T.xml");
+            CompilationEngine cengine(tokenizer, filePath + file_itr->substr(0,file_itr->size()-5) +".xml");
+            cengine.compileClass();
         }
 
         std::cout << "completed" << std::endl;
         return 0;
     }catch(std::exception& e){
-        std::cerr << typeid(e).name() << "exceprtion throwed\n";
+        std::cerr << typeid(e).name() << "\n";
         std::cerr << e.what() << std::endl;
         return -1;
     }

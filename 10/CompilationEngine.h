@@ -4,31 +4,45 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <boost/property_tree/xml_parser.hpp>
+
 #include "JackTokenizer.h"
 
-/*
+
 class CompilationEngine {
     private:
-        std::ofstream* ofs;
-        int labelcounter;
-        std::string className;
-        std::string currentFunctionName;
+        JackTokenizer& tokenizer;
+        std::ofstream ofs;
     public:
-        CompilationEngine(std::string fileName);
+        CompilationEngine(JackTokenizer& tokenizer, std::string outputFileName);
         ~CompilationEngine();
 
-        void setFileName(std::string fileName);
-        void writeArithmetic(std::string command);
-        void writePushPop(CommandType command, std::string segment, int index);
-        void close();
-        void writeInit();
-        void writeLabel(std::string label);
-        void writeGoto(std::string label);
-        void writeIf(std::string label);
-        void writeCall(std::string functionName, int numArgs);
-        void writeReturn();
-        void writeFunction(std::string functionName, int numLocals);
+        void compileClass();
+        void compileClassVarDec();
+        void compileSubroutine();
+        void compileParameterList();
+        void compileVarDec();
+        void compileStatements();
+        void compileDo();
+        void compileLet();
+        void compileWhile();
+        void compileReturn();
+        void compileIf();
+
+        void compileExpression();
+        void compileTerm();
+        void compileExpressionList();
+        void compileSubroutineCall();
+
+    private:
+        void compileTerminal(std::string type, std::string token);
+        void compileTerminal(std::string type, char token);
+        void compileTerminal(std::string type, int token);
+
+        bool isOp(char c);
+        bool isUnaryOp(char c);
+        bool isKeywordConstant(std::string s);
+        bool hasMoreTerms();
 };
-*/
 
 #endif // COMPILATIONENGINE_H_

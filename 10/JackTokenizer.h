@@ -12,23 +12,26 @@ enum TokenType
     KEYWORD, SYMBOL, IDENTIFIER, INT_CONST, STRING_CONST
 };
 
+/*
 enum KeyWord
 {
     CLASS,CONSTRUCTOR,FUNCTION,METHOD,FIELD,STATIC,VAR,INT,CHAR,BOOLEAN,VOID,TRUE,FALSE,NULL_K,THIS,LET,DO,IF,ELSE,WHILE,RETURN
 };
+*/
 
 class JackTokenizer {
     private:
         std::ifstream ifs;
         TokenType token_type;
         std::string token;
-        std::vector<std::string> token_list;
     public:
         JackTokenizer(std::string filename);
         ~JackTokenizer();
 
         bool hasMoreTokens();
         void advance();
+        std::string peekToken();
+        TokenType peekType();
         TokenType tokenType();
         void rewind();
         std::string keyWord();
@@ -37,7 +40,7 @@ class JackTokenizer {
         int intVal();
         std::string stringVal();
 
-        void debug_xml_output(std::string fileName);
+        void xml_output(std::string fileName);
 };
 
 #endif // JACKTOKENIZER_H_

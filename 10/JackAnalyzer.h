@@ -8,7 +8,7 @@
 #include <dirent.h>
 
 #include "JackTokenizer.h"
-//#include "CompilationEngine.h"
+#include "CompilationEngine.h"
 
 int main(int argc, char** argv);
 
