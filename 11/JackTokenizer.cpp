@@ -3,7 +3,7 @@
 JackTokenizer::JackTokenizer(std::string filename) : ifs(filename)
 {
     ifs.exceptions(std::ifstream::failbit);
-    std::cout << "tokenizing file: " << filename << std::endl;
+    std::cout << "compiling file: " << filename << std::endl;
 }
 
 JackTokenizer::~JackTokenizer()

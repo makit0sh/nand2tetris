@@ -1,4 +1,4 @@
-#include "JackAnalyzer.h"
+#include "JackCompiler.h"
 
 int main(int argc, char** argv)
 {
@@ -37,8 +37,8 @@ int main(int argc, char** argv)
         for (auto file_itr = file_list.begin(); file_itr!=file_list.end(); ++file_itr) {
 
             JackTokenizer tokenizer(filePath+*file_itr);
-            tokenizer.xml_output(filePath + file_itr->substr(0,file_itr->size()-5) +"T.xml");
-            CompilationEngine cengine(tokenizer, filePath + file_itr->substr(0,file_itr->size()-5) +".xml");
+            //tokenizer.xml_output(filePath + file_itr->substr(0,file_itr->size()-5) +"T.xml");
+            CompilationEngine cengine(tokenizer, filePath + file_itr->substr(0,file_itr->size()-5) +".vm");
             cengine.compileClass();
         }
 

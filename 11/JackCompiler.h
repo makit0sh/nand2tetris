@@ -1,5 +1,5 @@
-#ifndef JACKANALYZER_H_
-#define JACKANALYZER_H_
+#ifndef JACKCOMPILER_H_
+#define JACKCOMPILER_H_
 
 #include <iostream>
 #include <string>
@@ -9,7 +9,8 @@
 
 #include "JackTokenizer.h"
 #include "CompilationEngine.h"
+#include "VMWriter.h"
 
 int main(int argc, char** argv);
 
-#endif // JACKANALYZER_H_
+#endif // JACKCOMPILER_H_

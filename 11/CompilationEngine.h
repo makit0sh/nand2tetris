@@ -4,15 +4,19 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <boost/property_tree/xml_parser.hpp>
 
 #include "JackTokenizer.h"
-
+#include "SymbolTable.h"
+#include "VMWriter.h"
 
 class CompilationEngine {
     private:
         JackTokenizer& tokenizer;
-        std::ofstream ofs;
+        SymbolTable symbolTable;
+        VMWriter writer;
+        std::string className;
+
+        int currentLabelNumber;
     public:
         CompilationEngine(JackTokenizer& tokenizer, std::string outputFileName);
         ~CompilationEngine();
@@ -31,14 +35,9 @@ class CompilationEngine {
 
         void compileExpression();
         void compileTerm();
-        void compileExpressionList();
-        void compileSubroutineCall();
+        int compileExpressionList();
 
     private:
-        void compileTerminal(std::string type, std::string token);
-        void compileTerminal(std::string type, char token);
-        void compileTerminal(std::string type, int token);
-
         bool isOp(char c);
         bool isUnaryOp(char c);
         bool isKeywordConstant(std::string s);

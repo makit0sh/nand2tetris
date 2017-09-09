@@ -1,7 +1,7 @@
 CXX = g++
-TARGET = bin/JackAnalyzer
+TARGET = bin/JackCompiler
 CXXFLAGS = -Wall -O2 -pipe
-SRCS = JackAnalyzer.cpp JackTokenizer.cpp CompilationEngine.cpp
+SRCS = JackCompiler.cpp JackTokenizer.cpp SymbolTable.cpp VMWriter.cpp CompilationEngine.cpp
 OBJS := $(SRCS:.cpp=.o)
 
 $(TARGET): $(OBJS)
