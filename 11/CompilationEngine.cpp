@@ -189,7 +189,7 @@ void CompilationEngine::compileParameterList()
             }
         }else if (tokenizer.tokenType()==IDENTIFIER) {
             //compileTerminal("identifier", tokenizer.identifier());
-            typeName = tokenizer.keyWord();
+            typeName = tokenizer.identifier();
         }else{
             throw std::runtime_error("type unspecified");
         }
@@ -417,7 +417,6 @@ void CompilationEngine::compileLet()
         compileExpression();
         writer.writePush(varSegment, symbolTable.indexOf(varName));
         writer.writeArithmetic("add");
-        writer.writePop("pointer", 1);
         isArray = true;
 
         tokenizer.advance();
@@ -431,6 +430,9 @@ void CompilationEngine::compileLet()
 
     compileExpression();
     if (isArray) {
+        writer.writePop("temp", 0);
+        writer.writePop("pointer", 1);
+        writer.writePush("temp", 0);
         writer.writePop("that", 0);
     }else{
         writer.writePop(varSegment, symbolTable.indexOf(varName));
